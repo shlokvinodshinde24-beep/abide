@@ -1,0 +1,10 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+psycopg2-binary>=2.9
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.4
+pyjwt>=2.8
+python-multipart>=0.0.9
+anthropic>=0.40
