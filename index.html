@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ABIP – Autonomous Business Intelligence Platform</title>
+    <style>
+    :root {
+        --bg: #f3f5f7;
+        --surface: #fff;
+        --ink: #14202b;
+        --mute: #5d6b78;
+        --line: #d9e0e6;
+        --brand: #0b5c5a;
+        --brand-ink: #fff;
+        --warn: #c4472b;
+        --fc: #7a5cc9
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #0f171e;
+            --surface: #17222b;
+            --ink: #e8eef3;
+            --mute: #9aa9b6;
+            --line: #2a3945;
+            --brand: #3fb8b3;
+            --brand-ink: #08201f;
+            --warn: #ff8a6b;
+            --fc: #a791ee
+        }
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 16px/1.5 "IBM Plex Sans", "Segoe UI", system-ui, sans-serif
+    }
+
+    h1, h2, h3 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 600;
+        margin: 0
+    }
+
+    button, input {
+        font: inherit
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--brand);
+        outline-offset: 2px
+    }
+
+    .hidden {
+        display: none !important
+    }/* login */
+
+    .login {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1.1fr 1fr
+    }
+
+    .pitch {
+        background: var(--brand);
+        color: var(--brand-ink);
+        padding: 56px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between
+    }
+
+    .pitch h1 {
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1.1;
+        max-width: 14ch
+    }
+
+    .pitch p {
+        max-width: 44ch;
+        opacity: .9
+    }
+
+    .flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: .9rem
+    }
+
+    .flow span {
+        border: 1px solid currentColor;
+        border-radius: 4px;
+        padding: 3px 9px;
+        opacity: .9
+    }
+
+    .formwrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px
+    }
+
+    form {
+        width: 100%;
+        max-width: 360px
+    }
+
+    form h2 {
+        font-size: 1.7rem;
+        margin-bottom: 4px
+    }
+
+    label {
+        display: block;
+        margin: 18px 0 6px;
+        font-weight: 500
+    }
+
+    input {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--surface);
+        color: var(--ink)
+    }
+
+    .btn {
+        background: var(--brand);
+        color: var(--brand-ink);
+        border: 0;
+        border-radius: 6px;
+        padding: 11px 18px;
+        font-weight: 600;
+        cursor: pointer
+    }
+
+    form .btn {
+        width: 100%;
+        margin-top: 22px
+    }
+
+    .err {
+        color: var(--warn);
+        min-height: 1.5em;
+        margin-top: 10px
+    }
+
+    .hint {
+        color: var(--mute);
+        font-size: .9rem;
+        margin-top: 18px
+    }/* app */
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 28px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line)
+    }
+
+    header strong {
+        font-family: Georgia, serif;
+        font-size: 1.2rem
+    }
+
+    .ghost {
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        border-radius: 6px;
+        padding: 7px 14px;
+        cursor: pointer
+    }
+
+    main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 20px 60px
+    }
+
+    .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px
+    }
+
+    .kpi, .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px 18px
+    }
+
+    .kpi small {
+        color: var(--mute)
+    }
+
+    .kpi b {
+        display: block;
+        font-size: 1.7rem;
+        font-family: Georgia, serif
+    }
+
+    .up {
+        color:var(--brand)
+    }
+
+    .down {
+        color: var(--warn)
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 14px;
+        margin-top: 14px
+    }
+
+    .panel h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px
+    }
+
+    svg {
+        width: 100%;
+        height: auto;
+        display: block
+    }
+
+    .legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        color: var(--mute);
+        font-size: .88rem;
+        margin-top: 6px
+    }
+
+    ul.al {
+        margin: 0;
+        padding: 0;
+        list-style: none
+    }
+
+    ul.al li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line)
+    }
+
+    ul.al li:last-child {
+        border: 0
+    }
+
+    .ask {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px
+    }
+
+    .ask input {
+        flex: 1
+    }
+
+    .chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 12px
+    }
+
+    .chips button {
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        border-radius: 99px;
+        padding: 4px 12px;
+        cursor: pointer;
+        font-size: .88rem
+    }
+
+    pre {
+        background: var(--bg);
+        padding: 10px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: .85rem;
+        margin: 8px 0
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .92rem
+    }
+
+    td, th {
+        text-align: left;
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--line)
+    }
+
+    @media (max-width: 800px) {
+        .login {
+            grid-template-columns:1fr
+        }
+
+        .pitch {
+            padding: 32px 24px;
+            gap:28px
+        }
+
+        .grid {
+            grid-template-columns: 1fr
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <section class="login" id="login">
+        <div class="pitch">
+            <h1>Business data that explains itself.</h1>
+            <p>ABIP collects your data, cleans it, spots trends and anomalies, forecasts what comes next, and answers questions asked in plain English.</p>
+            <div class="flow" aria-label="Pipeline">
+                <span>Data source</span>
+                <span>ETL</span>
+                <span>PostgreSQL</span>
+                <span>ML analysis</span>
+                <span>NL query</span>
+                <span>Dashboard</span>
+            </div>
+        </div>
+        <div class="formwrap">
+            <form id="loginForm" novalidate>
+                <h2>Sign in</h2>
+                <div style="color:var(--mute)">Autonomous Business Intelligence Platform</div>
+                <label for="u">Username</label>
+                <input id="u" autocomplete="username" required>
+                <label for="p">Password</label>
+                <input id="p" type="password" autocomplete="current-password" required>
+                <div class="err" id="err" role="alert"></div>
+                <button class="btn" type="submit">Sign in</button>
+                <p class="hint">Use the admin credentials set for this deployment.</p>
+            </form>
+        </div>
+    </section>
+
+    <div id="app" class="hidden">
+        <header>
+            <strong>ABIP</strong>
+            <span>
+                <span id="who" style="margin-right:12px;color:var(--mute)"></span>
+                <button class="ghost" id="out">Sign out</button>
+            </span>
+        </header>
+        <main>
+            <div class="kpis" id="kpis"></div>
+            <div class="grid">
+                <div class="panel">
+                    <h3>Monthly revenue with 6-month forecast</h3>
+                    <svg id="chart" viewBox="0 0 640 280" role="img" aria-label="Revenue line chart with forecast and anomaly marker"></svg>
+                    <div class="legend">
+                        <span style="color:var(--brand)">&#9644; Actual</span>
+                        <span style="color:var(--fc)">&#9548;&#9548; Forecast</span>
+                        <span style="color:var(--warn)">&#9679; Anomaly</span>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>Detected anomalies</h3>
+                    <ul class="al" id="alerts"></ul>
+                </div>
+            </div>
+            <div class="grid">
+                <div class="panel">
+                    <h3>Ask your data</h3>
+                    <div class="chips" id="chips"></div>
+                    <form class="ask" id="askForm">
+                        <input id="q" placeholder="e.g. What were our highest-selling products this month?" aria-label="Question">
+                        <button class="btn" type="submit">Ask</button>
+                    </form>
+                    <div id="ans" aria-live="polite">
+                        <span style="color:var(--mute)">Answers appear here with the generated SQL.</span>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>Your data</h3>
+                    <div id="meta" class="hint"></div>
+                    <p class="hint">Upload a CSV with the columns date, product, qty, amount. A region column is optional.</p>
+                    <label style="display:flex;gap:8px;align-items:center;margin:10px 0">
+                        <input type="checkbox" id="replace" style="width:auto">
+                         Replace existing data
+                    </label>
+                    <input type="file" id="file" accept=".csv" hidden>
+                    <button class="btn" id="upBtn" type="button">Upload CSV</button>
+                    <div id="upMsg" class="hint" aria-live="polite"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    const KEY = "abip_token",
+        $ = id => document.getElementById(id);
+    const getTok = () => {
+        try {
+            return sessionStorage.getItem(KEY)
+        } catch (e) {
+            return null
+        }
+    };
+    const setTok = v => {
+        try {
+            v ? sessionStorage.setItem(KEY, v) : sessionStorage.removeItem(KEY)
+        } catch (e) {}
+    };
+    const inr = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0
+    });
+    const num = new Intl.NumberFormat("en-IN", {
+        maximumFractionDigits: 0
+    });
+    const cmp = new Intl.NumberFormat("en-IN", {
+        notation: "compact",
+        maximumFractionDigits: 1
+    });
+    const MN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const ml = m => {
+        const [y, mo] = m.split("-");
+        return MN[+mo - 1] + " " + y.slice(2)
+    };
+    const el = (t, txt, cls) => {
+        const e = document.createElement(t);
+        if (txt != null)
+            e.textContent = txt;
+        if (cls)
+            e.className = cls;
+        return e
+    };
+
+    async function api(path, {method="GET", json, body}={}) {
+        const headers = {};
+        if (getTok())
+            headers.Authorization = "Bearer " + getTok();
+        if (json) {
+            headers["Content-Type"] = "application/json";
+            body = JSON.stringify(json)
+        }
+        const r = await fetch(path, {
+            method,
+            headers,
+            body
+        });
+        const d = await r.json().catch(() => ({}));
+        if (r.status === 401 && path !== "/api/login") {
+            signOut();
+            throw new Error("Your session expired. Sign in again.")
+        }
+        if (!r.ok)
+            throw new Error(typeof d.detail === "string" ? d.detail : "Request failed. Try again.");
+        return d;
+    }
+    function show(on) {
+        $("login").classList.toggle("hidden", on);
+        $("app").classList.toggle("hidden", !on);
+        if (on)
+            load()
+    }
+    function signOut() {
+        setTok(null);
+        $("p").value = "";
+        show(false)
+    }
+    $("out").onclick = signOut;
+    $("loginForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        $("err").textContent = "";
+        try {
+            const d = await api("/api/login", {
+                method: "POST",
+                json: {
+                    username: $("u").value.trim(),
+                    password: $("p").value
+                }
+            });
+            setTok(d.token);
+            show(true)
+        }
+        catch (x) {
+            $("err").textContent = x.message
+        }
+    });
+
+    async function load() {
+        try {
+            render(await api("/api/summary"))
+        }
+        catch (e) {
+            $("kpis").replaceChildren(el("p", e.message, "hint"))
+        }
+    }
+    function render(d) {
+        $("who").textContent = "Signed in as " + d.user;
+        if (d.empty) {
+            $("kpis").replaceChildren(el("p", "No sales data yet. Upload a CSV to get started.", "hint"));
+            $("chart").replaceChildren();
+            $("alerts").replaceChildren();
+            $("meta").textContent = "0 rows loaded.";
+            return;
+        }
+        $("kpis").replaceChildren(...d.kpis.map(k => {
+            const c = el("div", null, "kpi");
+            c.append(el("small", k.label), el("b", k.fmt === "money" ? inr.format(k.value) : num.format(k.value)),
+            el("small", (k.delta >= 0 ? "+" : "") + k.delta.toFixed(1) + "% " + k.ref, k.delta >= 0 ? "up" : "down"));
+            return c;
+        }));
+        chart(d);
+        $("alerts").replaceChildren(...(d.anomalies.length ? d.anomalies.map(a => {
+            const li = el("li");
+            li.append(el("b", ml(a.month) + ": revenue " + Math.abs(a.pct).toFixed(0) + "% " + (a.pct < 0 ? "below" : "above") + " trend", a.pct < 0 ? "down" : ""),
+            document.createElement("br"), el("small", inr.format(a.actual) + " vs " + inr.format(a.expected) + " expected."));
+            return li;
+        }) : [el("li", "No anomalies detected in the loaded data.")]));
+        $("meta").textContent = num.format(d.meta.rows) + " rows loaded, " + d.meta.from + " to " + d.meta.to + ".";
+    }
+    function chart(d) {
+        const R = d.revenue,
+            F = d.forecast,
+            labels = d.months.concat(F.months),
+            n = labels.length - 1;
+        const W = 640,
+            H = 280,
+            L = 52,
+            Rr = 16,
+            T = 14,
+            B = 30;
+        const max = Math.max(...R, ...F.upper) * 1.08,
+            min = Math.max(0, Math.min(...R, ...F.lower) * 0.8);
+        const X = i => L + i * (W - L - Rr) / n,
+            Y = v => T + (max - v) * (H - T - B) / (max - min);
+        const a = R.length - 1;
+        let s = "";
+        for (let k = 0; k <= 4; k++) {
+            const v = min + (max - min) * k / 4;
+            s += `<line x1="${L}" x2="${W - Rr}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--mute)">${cmp.format(v)}</text>`
+        }
+        const step = Math.ceil(labels.length / 8);
+        labels.forEach((m, i) => {
+            if (i % step === 0)
+                s += `<text x="${X(i)}" y="${H - 8}" text-anchor="middle" font-size="11" fill="var(--mute)">${ml(m)}</text>`
+        });
+        const up = F.upper.map((v, i) => X(a + 1 + i) + "," + Y(v)),
+            lo = F.lower.map((v, i) => X(a + 1 + i) + "," + Y(v)).reverse();
+        s += `<polygon points="${X(a)},${Y(R[a])} ${up.join(" ")} ${lo.join(" ")}" fill="var(--fc)" opacity=".15"/>`;
+        s += `<polyline fill="none" stroke="var(--brand)" stroke-width="2.5" points="${R.map((v, i) => X(i) + "," + Y(v)).join(" ")}"/>`;
+        s += `<polyline fill="none" stroke="var(--fc)" stroke-width="2.5" stroke-dasharray="6 5" points="${X(a)},${Y(R[a])} ${F.values.map((v, i) => X(a + 1 + i) + "," + Y(v)).join(" ")}"/>`;
+        d.anomalies.forEach(x => {
+            const i = d.months.indexOf(x.month);
+            if (i >= 0)
+                s += `<circle cx="${X(i)}" cy="${Y(R[i])}" r="6" fill="var(--warn)"/>`
+        });
+        $("chart").innerHTML = s;
+    }
+
+    const chips = ["What were our highest-selling products this month?", "What were our total sales last month?", "Show revenue by region", "Show the monthly revenue trend"];
+    $("chips").replaceChildren(...chips.map(c => {
+        const b = el("button", c);
+        b.type = "button";
+        return b
+    }));
+    $("chips").onclick = e => {
+        if (e.target.tagName === "BUTTON") {
+            $("q").value = e.target.textContent;
+            ask()
+        }
+    };
+    $("askForm").addEventListener("submit", e => {
+        e.preventDefault();
+        ask()
+    });
+    async function ask() {
+        const q = $("q").value.trim();
+        if (!q)
+            return;
+        $("ans").replaceChildren(el("span", "Working on it…", "hint"));
+        try {
+            const d = await api("/api/ask", {
+                method: "POST",
+                json: {
+                    question: q
+                }
+            });
+            const t = el("table"),
+                hr = el("tr");
+            d.columns.forEach(c => hr.append(el("th", c)));
+            t.append(hr);
+            d.rows.forEach(r => {
+                const tr = el("tr");
+                r.forEach(v => tr.append(el("td", typeof v === "number" ? num.format(v) : v == null ? "" : v)));
+                t.append(tr)
+            });
+            $("ans").replaceChildren(el("b", d.title), ...(d.note ? [el("div", d.note, "hint")] : []), el("pre", d.sql), t, el("small", d.source === "llm" ? "Query written by Claude." : "Query from built-in rules.", "hint"));
+        } catch (e) {
+            $("ans").replaceChildren(el("span", e.message, "err"))
+        }
+    }
+
+    $("upBtn").onclick = () => $("file").click();
+    $("file").onchange = async () => {
+        const f = $("file").files[0];
+        if (!f)
+            return;
+        const fd = new FormData();
+        fd.append("file", f);
+        $("upMsg").textContent = "Uploading…";
+        try {
+            const d = await api("/api/upload?replace=" + $("replace").checked, {
+                method: "POST",
+                body: fd
+            });
+            $("upMsg").textContent = "Loaded " + num.format(d.loaded) + " rows" + (d.skipped ? " (" + d.skipped + " skipped)." : ".");
+            load()
+        }
+        catch (e) {
+            $("upMsg").textContent = e.message
+        }
+        $("file").value = "";
+    };
+    if (getTok())
+        show(true);
+    </script>
+</body>
+</html>
